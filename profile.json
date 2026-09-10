@@ -1,0 +1,45 @@
+[
+  {
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    "@id": "https://burakakgul.com/#profile",
+    "url": "https://burakakgul.com/",
+    "name": "Burak Akgül",
+    "mainEntity": {
+      "@type": "Person",
+      "@id": "https://burakakgul.com/#person",
+      "name": "Burak Akgül",
+      "url": "https://burakakgul.com/",
+      "image": "https://burakakgul.com/assets/profile.jpg",
+      "jobTitle": [
+        "Elektronik Mühendisi",
+        "Proje Yöneticisi"
+      ],
+      "worksFor": {
+        "@type": "Organization",
+        "name": "ASELSAN"
+      },
+      "alumniOf": {
+        "@type": "CollegeOrUniversity",
+        "name": "Hacettepe Üniversitesi"
+      },
+      "sameAs": [
+        "https://www.youtube.com/@bburakakgul",
+        "https://instagram.com/buraknakgul",
+        "https://www.linkedin.com/in/burak-akgül-1805a34a/",
+        "https://x.com/bburakakgul"
+      ]
+    }
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": "https://burakakgul.com/#website",
+    "url": "https://burakakgul.com/",
+    "name": "Burak Akgül",
+    "alternateName": "burakakgul.com",
+    "publisher": {
+      "@id": "https://burakakgul.com/#person"
+    }
+  }
+]
