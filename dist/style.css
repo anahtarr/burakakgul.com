@@ -21,3 +21,10 @@ html[lang="de"] .profession{font-size:1.25rem;letter-spacing:.12rem;text-indent:
 .languages a:hover::before,.languages a:focus-visible::before{opacity:1}
 .languages a[aria-current]::before{opacity:.21}
 .keep-together{display:inline-block;white-space:nowrap}
+
+/* Keep the profile area compact before the links and the About divider. */
+.intro .zigzag{margin-top:.8rem;margin-bottom:.8rem}
+.socials{margin-top:.8rem}
+.intro-inner{padding-bottom:1.75rem}
+@media(max-width:736px){.intro .zigzag{margin-top:.8rem;margin-bottom:.8rem}.socials{margin-top:.8rem}.intro-inner{padding-bottom:1.75rem}}
+@media(max-width:360px){.intro-inner{padding-bottom:1.5rem}}
