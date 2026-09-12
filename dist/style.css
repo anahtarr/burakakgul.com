@@ -32,3 +32,6 @@ html[lang="de"] .profession{font-size:1.25rem;letter-spacing:.12rem;text-indent:
 /* Set the profile title a little closer to the divider. */
 h1{position:relative;top:.6rem}
 .profession{top:calc(-10px + .6rem)}
+
+/* The active language also reveals its flag on hover or keyboard focus. */
+.languages a[aria-current]:hover::before,.languages a[aria-current]:focus-visible::before{opacity:1}
