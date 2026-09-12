@@ -28,3 +28,7 @@ html[lang="de"] .profession{font-size:1.25rem;letter-spacing:.12rem;text-indent:
 .intro-inner{padding-bottom:1.75rem}
 @media(max-width:736px){.intro .zigzag{margin-top:.8rem;margin-bottom:.8rem}.socials{margin-top:.8rem}.intro-inner{padding-bottom:1.75rem}}
 @media(max-width:360px){.intro-inner{padding-bottom:1.5rem}}
+
+/* Set the profile title a little closer to the divider. */
+h1{position:relative;top:.6rem}
+.profession{top:calc(-10px + .6rem)}
