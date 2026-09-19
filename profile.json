@@ -15,10 +15,6 @@
         "Elektronik Mühendisi",
         "Proje Yöneticisi"
       ],
-      "worksFor": {
-        "@type": "Organization",
-        "name": "ASELSAN"
-      },
       "alumniOf": {
         "@type": "CollegeOrUniversity",
         "name": "Hacettepe Üniversitesi"
