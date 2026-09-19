@@ -14,6 +14,9 @@ icons={'youtube':'<rect x="3" y="6" width="26" height="20" rx="6" fill="currentC
 tr[2:3]=tr[2].split('. ',2)
 tr[2]+='.'
 tr[3]+='.'
+tr[-1]='Bu siteyi kendimi uzun uzun anlatmak için değil, bana dair küçük izler bırakmak için hazırladım. Çünkü,'
+en[-1]='I made this site not to tell a long story about myself, but to leave a few small traces of who I am. Because,'
+de[-1]='Ich habe diese Seite nicht gemacht, um lange über mich zu erzählen, sondern um ein paar kleine Spuren von mir zu hinterlassen. Denn:'
 paths={'tr':'/','en':'/en/','de':'/de/'}
 labels={'tr':'Türkçe','en':'English','de':'Deutsch'}
 schemas=json.loads((Path(__file__).parent/'profile.json').read_text())
