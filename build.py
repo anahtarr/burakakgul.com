@@ -19,6 +19,7 @@ en[-1]='I made this site not to tell a long story about myself, but to leave a f
 de[-1]='Ich habe diese Seite nicht gemacht, um lange über mich zu erzählen, sondern um ein paar kleine Spuren von mir zu hinterlassen. Denn:'
 paths={'tr':'/','en':'/en/','de':'/de/'}
 labels={'tr':'Türkçe','en':'English','de':'Deutsch'}
+portrait_alt={'tr':'Burak Akgül, elektronik mühendisi ve koro solisti','en':'Burak Akgül, electronics engineer and choir soloist','de':'Burak Akgül, Elektronikingenieur und Chorsolist'}
 schemas=json.loads((Path(__file__).parent/'profile.json').read_text())
 
 for lang,c in content.items():
@@ -27,6 +28,7 @@ for lang,c in content.items():
  page_schemas[0]['url']=url
  page_schemas[0]['@id']=url+'#profile'
  page_schemas[0]['inLanguage']=lang
+ page_schemas[0]['mainEntity']['jobTitle']={'tr':['Elektronik Mühendisi','Proje Yöneticisi'],'en':['Electronics Engineer','Project Manager'],'de':['Elektronikingenieur','Projektmanager']}[lang]
  nav=''.join(f'<a href="{paths[l]}" lang="{l}" hreflang="{l}" title="{labels[l]}" aria-label="{labels[l]}"'+(' aria-current="page"' if l==lang else '')+f'>{l.upper()}</a>' for l in content)
  social=''.join(f'<li><a class="social {key}" href="{escape(href)}" data-social="{name}"><span>{c["email"] if key=="email" else name}</span><svg aria-hidden="true" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">{icons[key]}</svg></a></li>' for name,href,key in links)
  page=f'''<!doctype html>
@@ -35,8 +37,13 @@ for lang,c in content.items():
 <meta property="og:type" content="website"><meta property="og:site_name" content="Burak Akgül"><meta property="og:title" content="Burak Akgül | {c['title']}"><meta property="og:description" content="{escape(c['desc'])}"><meta property="og:url" content="{url}"><meta property="og:locale" content="{dict(tr='tr_TR',en='en_GB',de='de_DE')[lang]}"><meta property="og:image" content="https://burakakgul.com/assets/social-preview.png"><meta property="og:image:alt" content="Burak Akgül"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Burak Akgül | {c['title']}"><meta name="twitter:description" content="{escape(c['desc'])}"><meta name="twitter:image" content="https://burakakgul.com/assets/social-preview.png">
 <link rel="stylesheet" href="/assets/fonts.css"><link rel="stylesheet" href="/style.css"><script src="/app.js" defer></script>
 {''.join('<script type="application/ld+json">'+json.dumps(s,ensure_ascii=False)+'</script>' for s in page_schemas)}</head>
-<body><div class="portrait" role="img" aria-label="Burak Akgül"></div><main><section class="intro pattern" aria-label="Burak Akgül"><div class="intro-inner"><nav class="languages" aria-label="{dict(tr='Dil seçimi',en='Language',de='Sprache')[lang]}">{nav}</nav><h1>Burak Akgül</h1><p class="profession">{c['role']}</p><div class="zigzag" aria-hidden="true"></div><ul class="socials">{social}</ul><p class="copyright">Copyright © 2026<br>Burak Akgül</p></div></section><div class="zigzag about-divider" aria-hidden="true"></div><section class="about pattern" id="hakkimda"><div class="about-inner"><h2>{c['heading']}</h2>{''.join('<p>'+escape(p).replace('ve en zoru insanlar var :)', '<span class="keep-together">ve en zoru insanlar var :)</span>')+'</p>' for p in c['p'])}<p class="quote">{c['quote']}</p></div></section></main></body></html>'''
+<body><div class="portrait"><img src="/assets/profile.jpg" width="1536" height="1523" alt="{portrait_alt[lang]}"></div><main><section class="intro pattern" aria-label="Burak Akgül"><div class="intro-inner"><nav class="languages" aria-label="{dict(tr='Dil seçimi',en='Language',de='Sprache')[lang]}">{nav}</nav><h1>Burak Akgül</h1><p class="profession">{c['role']}</p><div class="zigzag" aria-hidden="true"></div><ul class="socials">{social}</ul><p class="copyright">Copyright © 2026<br>Burak Akgül</p></div></section><div class="zigzag about-divider" aria-hidden="true"></div><section class="about pattern" id="hakkimda"><div class="about-inner"><h2>{c['heading']}</h2>{''.join('<p>'+escape(p).replace('ve en zoru insanlar var :)', '<span class="keep-together">ve en zoru insanlar var :)</span>')+'</p>' for p in c['p'])}<p class="quote">{c['quote']}</p></div></section></main></body></html>'''
  target=root/paths[lang].strip('/')/'index.html';target.parent.mkdir(parents=True,exist_ok=True);target.write_text(page)
 (root/'robots.txt').write_text('User-agent: *\nAllow: /\nSitemap: https://burakakgul.com/sitemap.xml\n')
 
 (root/'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">'+''.join('<url><loc>https://burakakgul.com'+path+'</loc>'+''.join('<xhtml:link rel="alternate" hreflang="'+lang+'" href="https://burakakgul.com'+target+'"/>' for lang,target in {**paths,'x-default':'/'}.items())+'</url>' for path in paths.values())+'</urlset>\n')
+
+(root/'404.html').write_text('''<!doctype html>
+<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><meta name="theme-color" content="#FDEBEB"><title>Sayfa bulunamadı | Burak Akgül</title><link rel="icon" href="/favicon.gif" type="image/gif"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="stylesheet" href="/assets/fonts.css"><link rel="stylesheet" href="/style.css"></head>
+<body><main class="not-found pattern"><div class="not-found-inner"><p class="not-found-code">404</p><h1>Sayfa bulunamadı</h1><p>Aradığın sayfa burada değil ya da taşınmış olabilir.</p><a href="/">Ana sayfaya dön</a></div></main></body></html>
+''')
