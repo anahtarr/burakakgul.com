@@ -38,3 +38,13 @@ h1{position:relative;top:.6rem}
 
 /* Bring the profession line a little closer to the divider. */
 .profession{margin-bottom:1rem}
+
+/* Refine the profile hierarchy and let the long-form text breathe. */
+.profession{letter-spacing:.18rem;text-indent:.09rem}
+html[lang="de"] .profession{letter-spacing:.08rem;text-indent:0}
+.about.pattern{background-image:none;background-color:#fdf0f0}
+
+/* A shared treatment keeps the social links recognisable without Linktree-like colour blocks. */
+.social,.youtube,.instagram,.linkedin,.x,.spotify,.email{min-height:3.55rem;margin:0;padding:.8375rem 1.5rem;background:#ffffff8c;color:#263238;border:1px solid #2632382e;box-shadow:none;transform:none;font-size:1rem}
+.social svg,.youtube svg{height:1.875rem}
+.social:hover,.youtube:hover{background:#fff;transform:translateY(-2px);filter:none;box-shadow:0 .45rem 1rem #26323814}
