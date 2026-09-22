@@ -56,3 +56,13 @@ html[lang="de"] .profession{letter-spacing:.08rem;text-indent:0}
 .not-found p:not(.not-found-code){font-size:1.05rem;line-height:1.7;margin:0 auto 1.75rem;color:#40474b}
 .not-found a{display:inline-block;padding:.8rem 1.4rem;border:1px solid #26323855;border-radius:2rem;color:#263238;text-decoration:none;font-family:'Inconsolata',monospace}
 .not-found a:hover{background:#fff}
+
+/* About shortcut and the small falling daisy signature. */
+html{scroll-behavior:smooth}
+.about-button{position:absolute;z-index:2;right:3rem;top:.5rem;min-height:28px;padding:0 11px;display:inline-flex;align-items:center;justify-content:center;border:1px solid #26323855;border-radius:20px;background:#fdf0f0;color:#263238;text-decoration:none;font-family:'Inconsolata',monospace;font-size:12px;font-weight:500;letter-spacing:.04em}
+.about-button:hover{background:#fdf0f0;filter:brightness(.98)}
+.about .quote{display:flex;align-items:flex-start;gap:8px}
+.about .quote-text{padding-top:3px}
+.daisy{width:102px;height:145px;object-fit:contain;object-position:top center;flex:none;margin-left:-32px;transform:translateY(-26px)}
+@media(max-width:736px){.about-button{right:2rem;top:.68rem;font-size:11px;padding:0 9px;min-height:27px}.daisy{width:82px;height:118px;margin-left:-26px}}
+@media(max-width:360px){.about-button{right:1.5rem}.daisy{width:72px;height:104px;margin-left:-23px}}
