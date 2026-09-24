@@ -92,3 +92,22 @@ html{scroll-behavior:smooth}
 @media(prefers-reduced-motion:reduce){
   .about-inner.about-pending,.about-inner.about-visible{opacity:1;transform:none;animation:none}
 }
+
+/* Let narrow quotes wrap normally and reserve a separate space for the flower. */
+@media(max-width:1024px){
+  .about .quote{position:relative;min-height:0;padding-right:64px;padding-bottom:90px}
+  .quote-ending{display:inline;position:static;white-space:normal;padding-right:0}
+  .quote-ending .daisy{left:auto;right:0;top:auto;bottom:20px}
+}
+@media(max-width:360px){
+  .about .quote{padding-right:57px;padding-bottom:80px}
+  .quote-ending .daisy{right:0;bottom:18px}
+}
+.about-button{transition:transform 220ms ease,filter 220ms ease;transform-origin:center}
+@media(hover:hover) and (pointer:fine){
+  .about-button:hover{transform:scale(1.06)}
+}
+.about-button:focus-visible{transform:scale(1.06)}
+@media(prefers-reduced-motion:reduce){
+  .about-button:hover,.about-button:focus-visible{transform:none}
+}
