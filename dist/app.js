@@ -17,3 +17,27 @@ if (analyticsEnabled && ['burakakgul.com', 'www.burakakgul.com'].includes(locati
 document.querySelectorAll('.languages a').forEach(link => {
   if (location.hash) link.hash = location.hash;
 });
+
+// Observe the heading, so long mobile sections reveal as soon as they arrive.
+const aboutInner = document.querySelector('.about-inner');
+const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
+if (aboutInner && !motionPreference.matches && 'IntersectionObserver' in window) {
+  const reveal = () => {
+    aboutInner.classList.remove('about-pending');
+    aboutInner.classList.add('about-visible');
+  };
+  const observer = new IntersectionObserver(entries => {
+    if (entries.some(entry => entry.isIntersecting)) {
+      reveal();
+      observer.disconnect();
+    }
+  }, { threshold: 0, rootMargin: '0px 0px -24px 0px' });
+  aboutInner.classList.add('about-pending');
+  observer.observe(aboutInner.querySelector('h2'));
+  motionPreference.addEventListener('change', event => {
+    if (event.matches) {
+      reveal();
+      observer.disconnect();
+    }
+  });
+}

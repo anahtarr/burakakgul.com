@@ -70,3 +70,25 @@ html{scroll-behavior:smooth}
 /* Keep the language bar transparent to clicks outside its links. */
 .languages{pointer-events:none}
 .languages a{pointer-events:auto}
+
+/* Anchor the signature to the last word, including wrapped tablet/phone quotes. */
+.about .quote{display:block;min-height:145px;padding-top:3px}
+.about .quote-text{padding:0}
+.quote-ending{display:inline-block;position:relative;white-space:nowrap;padding-right:78px}
+.quote-ending .daisy{position:absolute;left:calc(100% - 102px);top:-29px;margin:0;transform:none}
+@media(max-width:1024px){
+  .about .quote{min-height:118px}
+  .quote-ending{padding-right:64px}
+  .quote-ending .daisy{width:82px;height:118px;left:calc(100% - 82px);top:-23px}
+}
+@media(max-width:360px){
+  .quote-ending{padding-right:57px}
+  .quote-ending .daisy{width:72px;height:104px;left:calc(100% - 72px);top:-20px}
+}
+.about-inner{transform-origin:center top}
+.about-inner.about-pending{opacity:0;transform:translateY(15px) scale(.96)}
+.about-inner.about-visible{animation:about-enter 620ms cubic-bezier(.22,1,.36,1) both}
+@keyframes about-enter{from{opacity:0;transform:translateY(15px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(prefers-reduced-motion:reduce){
+  .about-inner.about-pending,.about-inner.about-visible{opacity:1;transform:none;animation:none}
+}
