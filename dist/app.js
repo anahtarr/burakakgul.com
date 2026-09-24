@@ -18,7 +18,7 @@ document.querySelectorAll('.languages a').forEach(link => {
   if (location.hash) link.hash = location.hash;
 });
 
-// Observe the heading, so long mobile sections reveal as soon as they arrive.
+// Any visible part reveals the section, including reloads near the quote.
 const aboutInner = document.querySelector('.about-inner');
 const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
 if (aboutInner && !motionPreference.matches && 'IntersectionObserver' in window) {
@@ -33,7 +33,7 @@ if (aboutInner && !motionPreference.matches && 'IntersectionObserver' in window)
     }
   }, { threshold: 0, rootMargin: '0px 0px -24px 0px' });
   aboutInner.classList.add('about-pending');
-  observer.observe(aboutInner.querySelector('h2'));
+  observer.observe(aboutInner);
   motionPreference.addEventListener('change', event => {
     if (event.matches) {
       reveal();
