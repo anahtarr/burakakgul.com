@@ -111,3 +111,16 @@ html{scroll-behavior:smooth}
 @media(prefers-reduced-motion:reduce){
   .about-button:hover,.about-button:focus-visible{transform:none}
 }
+
+/* End the page just after the petals; keep the mobile signature beside the text. */
+.about{padding-bottom:4px}
+.about .quote{min-height:0;padding-bottom:90px}
+@media(max-width:1024px){
+  .about .quote{padding-right:70px;padding-bottom:82px}
+  .quote-ending{display:inline-block;position:relative;white-space:nowrap;padding-right:0}
+  .quote-ending .daisy{left:calc(100% - 12px);right:auto;top:-8px;bottom:auto}
+}
+@media(max-width:360px){
+  .about .quote{padding-right:60px;padding-bottom:72px}
+  .quote-ending .daisy{left:calc(100% - 10px);top:-6px}
+}
