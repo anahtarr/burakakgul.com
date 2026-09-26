@@ -11,9 +11,10 @@ INSTALL_ROOT=/srv/seo-feedback
 STAMP=$(date -u +%Y%m%dT%H%M%SZ)
 RELEASE_DIR="$INSTALL_ROOT/releases/$STAMP"
 
-install -d -m 0755 "$INSTALL_ROOT/releases" "$INSTALL_ROOT/data" "$INSTALL_ROOT/logs"
-install -d -m 0700 "$INSTALL_ROOT/secrets"
-install -d -m 0755 "$RELEASE_DIR"
+mkdir -p "$INSTALL_ROOT/releases" "$INSTALL_ROOT/data" "$INSTALL_ROOT/logs"
+mkdir -p "$INSTALL_ROOT/secrets" "$RELEASE_DIR"
+chmod 0755 "$INSTALL_ROOT/releases" "$INSTALL_ROOT/data" "$INSTALL_ROOT/logs" "$RELEASE_DIR"
+chmod 0700 "$INSTALL_ROOT/secrets"
 cp -R "$SOURCE_DIR/seo_feedback" "$RELEASE_DIR/seo_feedback"
 cp "$SOURCE_DIR/requirements.txt" "$RELEASE_DIR/requirements.txt"
 cp "$SOURCE_DIR/README.md" "$RELEASE_DIR/README.md"
