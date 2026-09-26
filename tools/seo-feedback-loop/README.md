@@ -23,7 +23,7 @@ Search Console cannot expose an individual's search query to Umami. The two sour
 ├── data/search-console.sqlite3
 ├── logs/
 ├── secrets/gsc-service-account.json
-└── venv/
+└── vendor/
 ```
 
 The release symlink makes rollback a single symlink change. Database, credentials and logs are outside each release.
@@ -41,10 +41,10 @@ The collector uses Google's recommended service-account client libraries and the
 ## Commands
 
 ```sh
-/srv/seo-feedback/venv/bin/python -m seo_feedback doctor
-/srv/seo-feedback/venv/bin/python -m seo_feedback collect
-/srv/seo-feedback/venv/bin/python -m seo_feedback report
-/srv/seo-feedback/venv/bin/python -m seo_feedback report --send
+/srv/seo-feedback/current/run doctor
+/srv/seo-feedback/current/run collect
+/srv/seo-feedback/current/run report
+/srv/seo-feedback/current/run report --send
 ```
 
 The first collection backfills 35 finalized days. Later runs refresh the last 10 finalized days, making delayed corrections idempotent. Search Console's newest three calendar days are deliberately skipped.
@@ -57,8 +57,8 @@ The existing crontab must be backed up and diffed before this block is appended.
 
 ```cron
 # === WEB SİTESİ / SEO ===
-20 4 * * 2-7 /srv/crypto/bin/withlock.sh seo_gsc 45 sh -c 'cd /srv/seo-feedback/current && /srv/seo-feedback/venv/bin/python -m seo_feedback collect >> /srv/seo-feedback/logs/collect.log 2>&1'
-20 4 * * 1 /srv/crypto/bin/withlock.sh seo_gsc 60 sh -c 'cd /srv/seo-feedback/current && /srv/seo-feedback/venv/bin/python -m seo_feedback collect >> /srv/seo-feedback/logs/collect.log 2>&1 && /srv/seo-feedback/venv/bin/python -m seo_feedback report --send >> /srv/seo-feedback/logs/weekly.log 2>&1'
+20 4 * * 2-7 /srv/crypto/bin/withlock.sh seo_gsc 45 sh -c 'cd /srv/seo-feedback/current && ./run collect >> /srv/seo-feedback/logs/collect.log 2>&1'
+20 4 * * 1 /srv/crypto/bin/withlock.sh seo_gsc 60 sh -c 'cd /srv/seo-feedback/current && ./run collect >> /srv/seo-feedback/logs/collect.log 2>&1 && ./run report --send >> /srv/seo-feedback/logs/weekly.log 2>&1'
 ```
 
 This runs away from the current 21:50 Umami job, 00:02 backup and 03:00 crypto jobs. Both SEO jobs use the same lock name, so two SEO processes cannot overlap.
