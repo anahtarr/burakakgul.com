@@ -2,12 +2,21 @@
 // Track all three production language routes; exclude local and staging hosts.
 const analyticsEnabled = true;
 if (analyticsEnabled && ['burakakgul.com', 'www.burakakgul.com'].includes(location.hostname)) {
+  const instagramLink = document.querySelector('[data-social="Instagram"]');
+  if (instagramLink) {
+    instagramLink.dataset.umamiEvent = 'instagram-click';
+    instagramLink.dataset.umamiEventPlatform = 'Instagram';
+    instagramLink.dataset.umamiEventLanguage = document.documentElement.lang;
+  }
+
   const script = document.createElement('script');
   script.src = 'https://cloud.umami.is/script.js';
   script.dataset.websiteId = '29731f47-29f2-43cc-995b-555807a6f476';
   script.defer = true;
   document.head.append(script);
   document.querySelectorAll('[data-social]').forEach(link => {
+    if (link.hasAttribute('data-umami-event')) return;
+
     link.addEventListener('click', () => window.umami?.track('social-click', {
       platform: link.dataset.social, language: document.documentElement.lang
     }));
