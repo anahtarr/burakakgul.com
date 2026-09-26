@@ -36,7 +36,7 @@ The release symlink makes rollback a single symlink change. Database, credential
 4. Store the key as `/srv/seo-feedback/secrets/gsc-service-account.json` with mode `0600`.
 5. Set `GSC_SITE_URL` to the exact property identifier. The default is `sc-domain:burakakgul.com`; a URL-prefix property would look like `https://burakakgul.com/`.
 
-The collector uses Google's recommended service-account client libraries and the official 25,000-row pagination limit.
+The collector uses Google's service-account authentication library and calls the official Search Console REST endpoint directly. This keeps the OpenWrt installation small while retaining the official 25,000-row pagination limit.
 
 ## Commands
 
