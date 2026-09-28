@@ -1,76 +1,74 @@
 # burakakgul.com SEO feedback loop
 
-This service collects finalized Google Search Console data into SQLite and creates a short weekly action report. It never edits the website or creates pages.
+This service runs on Atlas. It keeps the existing finalized Google Search Console collection and weekly report, and adds a conservative, auditable optimization cycle for the existing site. It never creates a page, URL or blog post.
 
-## What it measures
+## Safety policy
 
-- query, landing page, country and device dimensions
-- clicks, impressions, CTR and impression-weighted average position
-- queries ranking between positions 3 and 20
-- CTR gaps relative to the site's own position buckets
-- week-over-week click, impression and position declines
-- conservative language/topic mismatches between a query and its landing page
-
-CTR expectations blend the site's trailing 90-day data with a fallback position curve until each bucket has enough observations. This avoids applying one fixed CTR threshold to every rank.
-
-Search Console cannot expose an individual's search query to Umami. The two sources therefore remain privacy-safe, aggregate signals: GSC explains discovery; Umami events explain what visitors do after arriving.
+- At most one change per calendar week.
+- A query normally needs at least 100 impressions and 14 active days in the trailing 28 days.
+- Candidates are limited to average positions 3–20 and are scored using position-relative expected CTR, CTR gap, stability and landing-page match.
+- Deterministic filters run first. Gemini sees only the strongest final candidate and has a one-call weekly budget.
+- Only the existing title or meta description may be changed automatically. The three language pages, visible content, design, responsive layout, analytics and site behavior remain intact.
+- AI output is rejected if it contains HTML, exceeds length limits, introduces unverified vocabulary/facts, or touches a forbidden area.
+- Low confidence, low volume, quota exhaustion, missing configuration or any failed check produces a safe no-op report.
+- The same field has a 56-day cooldown.
 
 ## Server layout
 
 ```text
 /srv/seo-feedback/
 ├── current -> releases/<timestamp>/
+├── releases/
+├── backups/
 ├── data/search-console.sqlite3
 ├── logs/
-├── secrets/gsc-service-account.json
+├── secrets/
+│   ├── gsc-service-account.json
+│   └── runtime.env
 └── vendor/
 ```
 
-The release symlink makes rollback a single symlink change. Database, credentials and logs are outside each release.
-
-## Google setup
-
-1. Enable the Google Search Console API in a Google Cloud project.
-2. Create a service account and download its JSON key.
-3. Add the service account email as a user of the Search Console property.
-4. Store the key as `/srv/seo-feedback/secrets/gsc-service-account.json` with mode `0600`.
-5. Set `GSC_SITE_URL` to the exact property identifier. The default is `sc-domain:burakakgul.com`; a URL-prefix property would look like `https://burakakgul.com/`.
-
-The collector uses Google's service-account authentication library and calls the official Search Console REST endpoint directly. This keeps the OpenWrt installation small while retaining the official 25,000-row pagination limit.
+The site source is the GitHub repository checked out at `/srv/seo-feedback-source`. Changes are versioned there and deployed by the existing GitHub/Netlify flow; production files are never edited in place.
 
 ## Commands
 
 ```sh
 /srv/seo-feedback/current/run doctor
 /srv/seo-feedback/current/run collect
-/srv/seo-feedback/current/run report
 /srv/seo-feedback/current/run report --send
+/srv/seo-feedback/current/run-auto doctor
+/srv/seo-feedback/current/run-auto dry-run
+/srv/seo-feedback/current/run-auto weekly --send
 ```
 
-The first collection backfills 35 finalized days. Later runs refresh the last 10 finalized days, making delayed corrections idempotent. Search Console's newest three calendar days are deliberately skipped.
+Search Console's newest three calendar days are deliberately skipped. The first collection backfills 35 finalized days; later runs refresh the last 10 finalized days.
 
-`report --send` reuses the existing `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_IDS` variables from root's crontab. Secrets are never copied into this project.
+## Atlas cron
 
-## Proposed cron block for `izmirgli`
-
-The existing crontab must be backed up and diffed before this block is appended.
+Keep the established collection/report schedule and add the weekly optimizer at a separate time:
 
 ```cron
-# === WEB SİTESİ / SEO ===
-20 4 * * 2-7 /srv/crypto/bin/withlock.sh seo_gsc 45 sh -c 'cd /srv/seo-feedback/current && ./run collect >> /srv/seo-feedback/logs/collect.log 2>&1'
-20 4 * * 1 /srv/crypto/bin/withlock.sh seo_gsc 60 sh -c 'cd /srv/seo-feedback/current && ./run collect >> /srv/seo-feedback/logs/collect.log 2>&1 && ./run report --send >> /srv/seo-feedback/logs/weekly.log 2>&1'
+15 22 * * 1-6 /usr/bin/flock -n /run/lock/seo-feedback-collect.lock /srv/seo-feedback/run collect >> /srv/seo-feedback/logs/collect.log 2>&1
+15 22 * * 0 /usr/bin/flock -n /run/lock/seo-feedback-collect.lock sh -c '/srv/seo-feedback/run collect >> /srv/seo-feedback/logs/collect.log 2>&1 && /srv/seo-feedback/run report --send >> /srv/seo-feedback/logs/weekly.log 2>&1'
+35 23 * * 0 /usr/bin/flock -n /run/lock/seo-feedback-auto.lock /srv/seo-feedback/current/run-auto weekly --send >> /srv/seo-feedback/logs/automation.log 2>&1
 ```
 
-This runs away from the current 21:50 Umami job, 00:02 backup and 03:00 crypto jobs. Both SEO jobs use the same lock name, so two SEO processes cannot overlap.
+The 23:35 optimizer is separated from Atlas collection and from Gli_Izmir's 07:20/13:20/19:20 YouTube AI cycles. Gli_Izmir's five-minute reconcile-only job stays AI-free.
 
-## Environment overrides
+## Gemini budget and configuration
+
+Gemini is optional and fail-closed. Put configuration in `/srv/seo-feedback/secrets/runtime.env` with mode `0600`; never commit it:
 
 ```text
-GSC_SITE_URL=sc-domain:burakakgul.com
-GSC_CREDENTIALS_FILE=/srv/seo-feedback/secrets/gsc-service-account.json
-SEO_DATABASE_FILE=/srv/seo-feedback/data/search-console.sqlite3
-SEO_REPORT_TOP_N=3
-SEO_MIN_IMPRESSIONS=10
+GEMINI_API_KEY=...
+SEO_GEMINI_MODEL=gemini-3.1-flash-lite
+SEO_GEMINI_WEEKLY_BUDGET=1
 ```
 
-The low minimum only controls when a query becomes eligible for analysis. Opportunity ranking still weighs impression volume, position and the position-relative CTR gap.
+The automation caches identical decisions, records usage locally, deduplicates prompts, applies exponential backoff, and treats quota exhaustion as “no change”. Defaults may be overridden with `SEO_AUTO_MIN_IMPRESSIONS`, `SEO_AUTO_MIN_ACTIVE_DAYS`, `SEO_AUTO_CONFIDENCE`, `SEO_AUTO_COOLDOWN_DAYS` and `SEO_AUTO_MEASURE_DAYS`.
+
+## Change ledger and rollback
+
+Every applied experiment is stored in SQLite table `seo_changes` with the target query, old/new value, baseline metrics, backup path and Git commit/release identifiers. The result is first evaluated after 14 days. Fewer than 60 post-change impressions is inconclusive and keeps the change. A significant CTR and position regression triggers an automatic Git revert and redeploy.
+
+Before a push, the automation builds and checks all three languages, canonical/hreflang, JSON-LD, title/description limits and the Umami loader. After deploy it verifies HTTP, live DOM/meta and Umami. Any failure rolls the commit back automatically. The pre-change source snapshot is also kept under `/srv/seo-feedback/backups`.

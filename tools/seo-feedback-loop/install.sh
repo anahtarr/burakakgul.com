@@ -19,7 +19,8 @@ cp -R "$SOURCE_DIR/seo_feedback" "$RELEASE_DIR/seo_feedback"
 cp "$SOURCE_DIR/requirements.txt" "$RELEASE_DIR/requirements.txt"
 cp "$SOURCE_DIR/README.md" "$RELEASE_DIR/README.md"
 cp "$SOURCE_DIR/run.sh" "$RELEASE_DIR/run"
-chmod 0755 "$RELEASE_DIR/run"
+cp "$SOURCE_DIR/run-auto.sh" "$RELEASE_DIR/run-auto"
+chmod 0755 "$RELEASE_DIR/run" "$RELEASE_DIR/run-auto"
 
 python3 -m pip install \
     --disable-pip-version-check \
